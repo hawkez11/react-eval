@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Button, Popover } from '@mui/material';
 import ImageIndex from './ImageIndex';
-import { FavoritesContext } from '../Pages/FavoritesContext';
+import { FavoritesSelector } from '../Pages/FavoritesSlice';
+import { useSelector } from 'react-redux';
 
 const FavoritesPopover = () => {
-	let { favorites } = useContext(FavoritesContext);
-
+	const favorites = useSelector(FavoritesSelector);
 	const [anchorEl, setAnchorEl] = React.useState(null);
 
 	const handleClick = (event: any) => {

@@ -1,20 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import DisneyTable from '../Components/Table';
-import { useQuery } from 'react-query';
-import { GetAllCharacters, TransformCharacters, TransformedCharacters } from '../Api/DisneyApi';
-import { AllCharacters } from '../types/disneyApi/AllCharacters';
 import FavoritesPopover from '../Components/FavoritesPopover';
-import { FavoritesContext } from './FavoritesContext';
-import { ImageIndexData } from '../Components/ImageIndex';
+import { useGetAllCharactersQuery } from '../Api/DisneyApi';
 
 const Listing = () => {
-	const defaultFavorites: ImageIndexData[] = []
-	let [favorites, setFavorites] = useState(defaultFavorites);
-	const favoritesContextValue = { favorites, setFavorites };
-
-	const { data, isLoading } = useQuery<AllCharacters, Error, TransformedCharacters>('getAllCharacters', GetAllCharacters, {
-		select: TransformCharacters
-	});
+	const { data, isLoading } = useGetAllCharactersQuery(null);
 
 	if(isLoading) {
 		return (
@@ -24,10 +14,8 @@ const Listing = () => {
 
 	return (
 		<div style={{margin: 30}}>
-			<FavoritesContext.Provider value={favoritesContextValue}>
-				<FavoritesPopover />
-				<DisneyTable rows={data?.data} />
-			</FavoritesContext.Provider>
+			<FavoritesPopover />
+			<DisneyTable rows={data?.data} />
 		</div>
 	);
 }

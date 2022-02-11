@@ -1,15 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid'
 import { ImageIndexData } from './ImageIndex';
-import { FavoritesContext } from '../Pages/FavoritesContext';
+import { FavoritesSelector, setFavorites } from '../Pages/FavoritesSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 export type DisneyTableProps = {
 	rows: GridRowsProp | undefined
 };
 
 const DisneyTable = (props: DisneyTableProps) => {
-	
-	let { favorites, setFavorites } = useContext(FavoritesContext);
+	const favorites = useSelector(FavoritesSelector);
+	const dispatch = useDispatch();
 
 	const GetDataGrid = ({rows}: DisneyTableProps) => {
 		const pageSize = 50;
@@ -51,7 +52,7 @@ const DisneyTable = (props: DisneyTableProps) => {
 							}
 							return response;
 						});
-						setFavorites(favorites);
+						dispatch(setFavorites(favorites));
 					}}
 				/>
 			)

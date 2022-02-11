@@ -1,9 +1,10 @@
-import axios, { Axios, AxiosResponse } from "axios";
-import { useQuery } from "react-query";
+import axios from "axios";
 import { GridRowModel, GridRowsProp } from '@mui/x-data-grid';
 
 import { AllCharacters } from "../types/disneyApi/AllCharacters";
 import SingleCharacter from "../types/disneyApi/SingleCharacter";
+
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const GetAllCharacters = (): Promise<AllCharacters> => {
 	const disneyUrl = 'https://api.disneyapi.dev/characters';
@@ -48,3 +49,18 @@ export const TransformCharacters = (allCharacters: AllCharacters): TransformedCh
 
 	return response;
 }
+
+export const DisneyApi = createApi({
+	reducerPath: 'disneyApi',
+	baseQuery: fetchBaseQuery({ baseUrl:'https://api.disneyapi.dev/'}),
+	endpoints: (builder) => ({
+		getAllCharacters: builder.query<TransformedCharacters, null>({
+			query: () => 'characters',
+			transformResponse: (response: AllCharacters) => {
+				return TransformCharacters(response);
+			}
+		}) 
+	})
+});
+
+export const { useGetAllCharactersQuery } = DisneyApi;
