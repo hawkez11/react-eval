@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import { DataGrid, GridColDef, GridRowsProp, GridSelectionModel } from '@mui/x-data-grid'
+import React, { useContext } from 'react';
+import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid'
+import { ImageIndexData } from './ImageIndex';
+import { FavoritesContext } from '../Pages/FavoritesContext';
 
 export type DisneyTableProps = {
 	rows: GridRowsProp | undefined
 };
 
 const DisneyTable = (props: DisneyTableProps) => {
-	const defaultValue: GridSelectionModel = [];
-	let [checkedState, setCheckedState] = useState(defaultValue);
+	
+	let { favorites, setFavorites } = useContext(FavoritesContext);
 
 	const GetDataGrid = ({rows}: DisneyTableProps) => {
 		const pageSize = 50;
@@ -35,9 +37,21 @@ const DisneyTable = (props: DisneyTableProps) => {
 					pageSize={pageSize}
 					rowHeight={300}
 					checkboxSelection
-					selectionModel={checkedState}
+					selectionModel={favorites.map((item) => item._id)}
 					onSelectionModelChange={(newSelectionModel) => {
-						setCheckedState(newSelectionModel);
+						const selectedIDs = new Set(newSelectionModel);
+						const selectedRowData = rows.filter((row) =>
+							selectedIDs.has(row.id)
+  						);
+						const favorites = selectedRowData.map((item) => {
+							const response: ImageIndexData = {
+								_id: item["id"],
+								imageUrl: item["imageUrl"],
+								name: item["name"]
+							}
+							return response;
+						});
+						setFavorites(favorites);
 					}}
 				/>
 			)
